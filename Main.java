@@ -1,4 +1,6 @@
 package com.company;
+import javafx.collections.transformation.SortedList;
+
 import java.util.*;
 
 public class Main {
@@ -9,8 +11,7 @@ public class Main {
         System.out.println(CodilityExamQ1("09:42", "11:39"));
 
         System.out.println("Binary Gap: ");
-        int BinGap[] = {1, 0, 0, 1};
-        System.out.println(BinaryGap(BinGap));
+        System.out.println(BinaryGap(9));
 
         System.out.println("Cyclic Rotation: ");
         int CyclicRotationArr[] = {3, 8, 9, 7, 6};
@@ -68,6 +69,10 @@ public class Main {
         //int MaxProductOfThreeArr[] = {-5, -5, 4, 5};
         System.out.println(MaxProductOfThree(maxProductOfThreeArr, maxProductOfThreeArr.length));
 
+        System.out.println("Stone Wall");
+        int stoneWallArr[] = {8, 8, 5, 7, 9, 8, 7, 4, 8};
+        System.out.println(StoneWall(stoneWallArr, stoneWallArr.length));
+
 
         //=============================================
         // Additional In Progress Coding Example Tests
@@ -91,6 +96,25 @@ public class Main {
         //int A[] = {1, 50, 50, 50, 1};
         //System.out.println(solution2(A));
 
+    }
+
+    private static int StoneWall(int H[], int N) {
+        Stack<Integer> activeWallHeights = new Stack<>();
+        int numBlocks = 0;
+        for(int i = 0; i < H.length; i++) {
+            while(!activeWallHeights.empty()
+                    && activeWallHeights.peek() > H[i]) // The next wall height is lower than the top of the stack, pop the stack until all higher blocks are gone
+                activeWallHeights.pop();
+            if(activeWallHeights.empty()) { // if empty stack, push new wall height and increment count of blocks
+                activeWallHeights.push(H[i]);
+                numBlocks++;
+            } else if(!activeWallHeights.empty()
+                    && activeWallHeights.peek() != H[i]) { // if not empty and new height, push and increment
+                activeWallHeights.push(H[i]);
+                numBlocks++;
+            }
+        }
+        return numBlocks;
     }
 
     private static int GetMaxProfit(int[] stocksPrices) {
@@ -365,16 +389,16 @@ public class Main {
         return maxCount;
     }
 
-    static int BinaryGap(int[] A) {
+    /*static int BinaryGap(int[] A) {
         Arrays.sort(A);
         for (int i = 0; i < A.length; i++) {
             if (!HasPairNeighbor(i, A, A.length)) return A[i];
         }
         return -1;
 
-    }
+    }*/
 
-    static boolean HasPairNeighbor(int indexPos, int[] A, int arrLen) {
+    /*static boolean HasPairNeighbor(int indexPos, int[] A, int arrLen) {
         if (arrLen == 1) return false;
         if (arrLen == 2) return A[0] == A[1];
         if (arrLen >= 3) {
@@ -388,7 +412,7 @@ public class Main {
         } else {
             return false;
         }
-    }
+    }*/
 
     static int MissingInteger(int[] A) {
         // write your code in Java SE 8
