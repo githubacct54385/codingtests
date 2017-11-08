@@ -116,22 +116,16 @@ public class Main {
 
 
         System.out.println("\nRectangular Overlapping Plots");
-        /*int [][] points = {{1,1,2,2}, {2,5,4,7}, {4,2,7,3}};
-        int [][] points2 = {{1,1,2,2}, {2,2,5,3}};
-        int [][] points3 = {{1,1,3,3}, {2,2,5,5}};
-        int [][] points4 = {{1,1,2,2}, {3,3,4,4}};
-        System.out.println(PlotsOverlap(points2));*/
-
-
-        //Point2D l1 = new Point2D(0,10), r1 = new Point2D(10,0);
-        //Point2D l2 = new Point2D(5,5), r2 = new Point2D(15,0);
         Point2D l1 = new Point2D(1,1), r1 = new Point2D(3,3);
         Point2D l2 = new Point2D(4,4), r2 = new Point2D(5,5);
+        System.out.println("Rectangle A: (" + (int)l1.getX() + ", " + (int)l1.getY() + "), (" + (int)r1.getX() + ", " + (int)r1.getY() + ")");
+        System.out.println("Rectangle B: (" + (int)l2.getX() + ", " + (int)l2.getY() + "), (" + (int)r2.getX() + ", " + (int)r2.getY() + ")");
 
-        if (doOverlap(l1, r1, l2, r2))
-            System.out.println("\nRectangles Overlap");
-        else
+        if (NoOverlap(l1, r1, l2, r2))
             System.out.println("\nRectangles Don't Overlap");
+        else
+            System.out.println("\nRectangles Overlap");
+
 
 
         //=============================================
@@ -158,98 +152,15 @@ public class Main {
 
     }
 
-    // Returns true if two rectangles (l1, r1) and (l2, r2) overlap
+    // Returns true if two rectangles (l1, r1) and (l2, r2)  do not overlap
+    // If rectangles are touching but not overlapping, that is not considered an overlap
     // https://stackoverflow.com/questions/23302698/java-check-if-two-rectangles-overlap-at-any-point
-    private static boolean doOverlap(Point2D l1, Point2D r1, Point2D l2, Point2D r2) {
-        return !((l2.getX() >= r1.getX()) ||
+    private static boolean NoOverlap(Point2D l1, Point2D r1, Point2D l2, Point2D r2) {
+        return ((l2.getX() >= r1.getX()) ||
                 (l2.getY() >= r1.getY()) ||
                 (l1.getX() >= r2.getX()) ||
                 (l1.getY() >= r2.getX()));
     }
-
-   /* private static boolean PlotsOverlap(int[][] points) {
-
-        Point2D[] pointPairs = new Point2D[points.length * 2];
-        int indx = 0;
-        for(int i = 0; i < points.length; i++) {
-            Point2D p1 = new Point2D(points[i][0], points[i][1]);
-            Point2D p2 = new Point2D(points[i][2], points[i][3]);
-            pointPairs[indx++] = p1;
-            pointPairs[indx++] = p2;
-        }
-
-        for(int i = 0; i < pointPairs.length - 3; i++) {
-            Point2D l1 = pointPairs[i];
-            Point2D r1 = pointPairs[i+1];
-            Point2D l2 = pointPairs[i+2];
-            Point2D r2 = pointPairs[i+3];
-            if(DoesOverlap(l1, r1, l2, r2)) {
-                System.out.println("Point Pair: " + i + " and Point Pair: " + (i + 1) + " are overlapping.");
-                return true;
-            }
-        }
-        return false;
-
-
-        *//*for(int i = 0; i < pointPairs.length - 3; i++) {
-            // one rectangle is on the left of the other
-            Point2D l1 = pointPairs[i];
-            Point2D r1 = pointPairs[i+1];
-            Point2D l2 = pointPairs[i+2];
-            Point2D r2 = pointPairs[i+3];
-            if(l1.getX() > r2.getX() || l2.getX() > r1.getX()) {
-                return false;
-            }
-            else if(l1.getY() < r2.getY() || l2.getY() < r1.getY()) {
-                return false;
-            }
-            else {
-                System.out.println("Point Pair: " + i + " and Point Pair: " + (i + 1) + " are overlapping.");
-                return true;
-            }
-        }*//*
-    }*/
-
-    //private static boolean DoesOverlap(Point2D l1, Point2D r1, Point2D l2, Point2D r2) {
-        /*// If one rectangle is on left side of other
-        if (l1.getX() > r2.getX() || l2.getX() > r1.getX())
-            return false;
-
-        // If one rectangle is above other
-        if (l1.getY() < r2.getY() || l2.getY() < r1.getY())
-            return false;*/
-
-        /*// One rectangle on the side of the other
-        if(l1.getX() < r2.getX() && r1.getX() < l2.getX())
-            return false;
-
-        // One rectangle is above the other
-        if(r1.getY() < l2.getY() && r2.getY() > l1.getY())
-            return false;
-
-        return true;*/
-
-        // If one rectangle is on left side of other
-        /*if (l1.getX() > r2.getX() || l2.getX() > r1.getX())
-            return false;
-
-        // If one rectangle is above other
-        if (l1.getY() < r2.getY() && r1.getY() < l2.getY())
-            return false;*/
-
-
-
-
-        // Prototype
-        // checks if the rectangles are the on one side of the other
-        /*if((r1.getX() < l2.getX() && l1.getX() < r2.getX()) || (r2.getX() < l1.getX() && r1.getX() > l2.getX())) {
-            if((l1.getY() < r2.getY() && r1.getY() < l2.getY()) || (l2.getY() < r1.getY() || l1.getY() > r2.getY())) {
-                return false;
-            }
-        }
-        return true;
-    }*/
-
 
     static class Graph {
         private int V;   // No. of vertices
