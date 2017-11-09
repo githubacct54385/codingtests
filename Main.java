@@ -1,10 +1,8 @@
 package com.company;
 import javafx.geometry.Point2D;
+import javafx.geometry.Rectangle2D;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Stack;
+import java.util.*;
 
 public class Main {
 
@@ -103,7 +101,7 @@ public class Main {
         g.addEdge(2, 3);
         g.addEdge(3, 3);
 
-        System.out.println("Following is Breadth First Traversal "+
+        System.out.println("Following is Breadth First Traversal " +
                 "(starting from vertex 2)");
 
         g.BFS(2);
@@ -116,16 +114,172 @@ public class Main {
 
 
         System.out.println("\nRectangular Overlapping Plots");
-        Point2D l1 = new Point2D(1,1), r1 = new Point2D(3,3);
-        Point2D l2 = new Point2D(4,4), r2 = new Point2D(5,5);
-        System.out.println("Rectangle A: (" + (int)l1.getX() + ", " + (int)l1.getY() + "), (" + (int)r1.getX() + ", " + (int)r1.getY() + ")");
-        System.out.println("Rectangle B: (" + (int)l2.getX() + ", " + (int)l2.getY() + "), (" + (int)r2.getX() + ", " + (int)r2.getY() + ")");
+        Point2D l1 = new Point2D(1, 1), r1 = new Point2D(3, 3);
+        Point2D l2 = new Point2D(4, 4), r2 = new Point2D(5, 5);
+        System.out.println("Rectangle A: (" + (int) l1.getX() + ", " + (int) l1.getY() + "), (" + (int) r1.getX() + ", " + (int) r1.getY() + ")");
+        System.out.println("Rectangle B: (" + (int) l2.getX() + ", " + (int) l2.getY() + "), (" + (int) r2.getX() + ", " + (int) r2.getY() + ")");
 
+        Rectangle2D rectA = new Rectangle2D(l1.getX(), l1.getY(), r1.getX() - l1.getY(), r1.getY() - l1.getY());
+        Rectangle2D rectB = new Rectangle2D(l2.getX(), l2.getY(), r2.getX() - l2.getX(), r2.getY() - l2.getY());
+
+        // 1st solution using Java Rectangle2D objects.
+        // https://docs.oracle.com/javase/8/docs/api/java/awt/Rectangle.html
+        // Does all the math for you.  Very clean.
+        if (rectA.contains(rectB) || rectA.intersects(rectB)) {
+            System.out.println("\nRectangles Overlap");
+        } else {
+            System.out.println("\nRectangles Don't Overlap");
+        }
+
+        // 2nd solution using the cartesian coordinates.
         if (NoOverlap(l1, r1, l2, r2))
             System.out.println("\nRectangles Don't Overlap");
         else
             System.out.println("\nRectangles Overlap");
 
+
+        System.out.println("\nIs Full Binary Tree?");
+        BTNode treeRoot = new BTNode();
+        treeRoot.left = new BTNode();
+        treeRoot.right = new BTNode();
+        treeRoot.left.right = new BTNode();
+        treeRoot.left.left = new BTNode();
+        treeRoot.right.left = new BTNode();
+        treeRoot.left.left.left = new BTNode();
+        treeRoot.right.right = new BTNode();
+        treeRoot.left.left.right = new BTNode();
+        treeRoot.left.right.left = new BTNode();
+        treeRoot.left.right.right = new BTNode();
+        treeRoot.right.left.left = new BTNode();
+        treeRoot.right.left.right = new BTNode();
+        treeRoot.right.right.left = new BTNode();
+        treeRoot.right.right.right = new BTNode();
+
+        if (IsFullBinaryTree(treeRoot))
+            System.out.print("The binary tree is full");
+        else
+            System.out.print("The binary tree is not full");
+
+
+        try {
+            System.out.println("\n\nPlease enter the Running Id, Width, and Weight separated by spaces.  Then press Enter.  If you are done, press Enter without inputting any thing.");
+            ArrayList<Item> itemsList = new ArrayList<>();
+            Scanner scan = new Scanner(System.in);
+            while (scan.hasNextLine()) {
+                // read input from stdin
+                String string = scan.nextLine();
+                if (string.isEmpty())
+                    break;
+                Item i = new Item(string);
+                itemsList.add(i);
+                System.out.println("Received...  Please input another entry or press Enter to finish.");
+            }
+            System.out.println("Input finished.");
+
+            // solve code
+
+            // Rules:
+            // Width: Items must be aligned side by side.  Up to 1100mm of space allowed per module.
+            // Weight: Items must be less than or equal to 1000 kg per module.
+            // First fill A, then B, then C
+
+            /*Collections.sort(itemsList, new Comparator<Item>() {
+                @Override
+                public int compare(Item o1, Item o2) {
+                    return o1.width - o2.width;
+                }
+            });*/
+
+            // sort by width, height, and running Id
+            Collections.sort(itemsList, new ItemComparator());
+            // now try to place them into modules starting with A, then B, then C
+            int index = 0;
+            ArrayList<Item> aGroup = new ArrayList<>();
+            ArrayList<Item> bGroup = new ArrayList<>();
+            ArrayList<Item> cGroup = new ArrayList<>();
+
+            int widthSum = 0;
+            int weightSum = 0;
+            boolean aGroupFinish = false;
+            boolean bGroupFinish = false;
+            boolean cGroupFinish = false;
+
+            while (index < itemsList.size()) {
+                if ((widthSum + itemsList.get(index).GetWidth() <= 1100) && (weightSum + itemsList.get(index).GetWeight() <= 1000)) {
+                    if (!aGroupFinish)
+                        aGroup.add(itemsList.get(index));
+                    else if (!bGroupFinish)
+                        bGroup.add(itemsList.get(index));
+                    else
+                        cGroup.add(itemsList.get(index));
+                    widthSum += itemsList.get(index).GetWidth();
+                    weightSum += itemsList.get(index).GetWeight();
+                    index++;
+                } else {
+                    if (!aGroupFinish) {
+                        widthSum = 0;
+                        weightSum = 0;
+                        aGroupFinish = true;
+                    } else if (!bGroupFinish) {
+                        widthSum = 0;
+                        weightSum = 0;
+                        bGroupFinish = true;
+                    } else if (!cGroupFinish) {
+                        widthSum = 0;
+                        weightSum = 0;
+                        cGroupFinish = true;
+                    }
+
+                }
+            }
+
+            for (int i = 0; i < itemsList.size(); i++) {
+                System.out.println("Running Id: " + itemsList.get(i).runningId
+                        + " ,Width: " + itemsList.get(i).width + " , Weight: " + itemsList.get(i).weight);
+            }
+
+
+            // print A Group, B Group, C Group
+            String aGroupStr = "A:";
+            if (aGroup.size() > 0) {
+                for (int i = 0; i < aGroup.size(); i++) {
+                    if (i < aGroup.size() - 1) {
+                        aGroupStr += aGroup.get(i).GetRunningId() + ", ";
+                    } else {
+                        aGroupStr += aGroup.get(i).GetRunningId();
+                    }
+                }
+            }
+
+            String bGroupStr = "B:";
+            if (bGroup.size() > 0) {
+                for (int i = 0; i < bGroup.size(); i++) {
+                    if (i < bGroup.size() - 1) {
+                        bGroupStr += bGroup.get(i).GetRunningId() + ", ";
+                    } else {
+                        bGroupStr += bGroup.get(i).GetRunningId();
+                    }
+                }
+            }
+
+            String cGroupStr = "C:";
+            if (cGroup.size() > 0) {
+                for (int i = 0; i < cGroup.size(); i++) {
+                    if (i < cGroup.size() - 1) {
+                        cGroupStr += cGroup.get(i).GetRunningId() + ", ";
+                    } else {
+                        cGroupStr += cGroup.get(i).GetRunningId();
+                    }
+                }
+            }
+
+            System.out.println(aGroupStr);
+            System.out.println(bGroupStr);
+            System.out.println(cGroupStr);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
         //=============================================
@@ -150,6 +304,135 @@ public class Main {
         //int A[] = {1, 50, 50, 50, 1};
         //System.out.println(solution2(A));
 
+    }
+
+    private static int SumModuleWidth(ArrayList<Item> items) {
+        int sum = 0;
+        for(int i = 0; i < items.size(); i++) {
+            sum += items.get(i).GetWidth();
+        }
+        return sum;
+    }
+
+    private static int SumModuleWeight(ArrayList<Item> items) {
+        int sum = 0;
+        for(int i = 0; i < items.size(); i++) {
+            sum += items.get(i).GetWeight();
+        }
+        return sum;
+    }
+
+    private static class Item {
+        private final int runningId;
+        private final int width;
+        private final int weight;
+
+        public int GetWidth() {
+            return width;
+        }
+
+        public int GetWeight() {
+            return weight;
+        }
+
+        public int GetRunningId() {
+            return runningId;
+        }
+
+        private Item(String str) throws Exception {
+            String[] splitStr = str.split(" ");
+            if(splitStr.length != 3) {
+                throw new Exception("Item input is in wrong format.  Please enter in the format RunningId Width Weight");
+            }
+            this.runningId = Integer.parseInt(splitStr[0]);
+            this.width = Integer.parseInt(splitStr[1]);
+            this.weight = Integer.parseInt(splitStr[2]);
+        }
+
+    }
+
+    private static class ItemComparator implements Comparator<Item> {
+
+        @Override
+        public int compare(Item o1, Item o2) {
+
+
+            if(o1.GetWidth() > o2.GetWidth())
+                return -1;
+            else if(o1.GetWidth() < o2.GetWidth())
+                return 1;
+            else { // widths are equal, compare weights
+                if(o1.GetWeight() > o2.GetWeight())
+                    return -1;
+                else if(o1.GetWeight() < o2.GetWeight())
+                    return 1;
+                else { // widths and weights are the same, return lowest Running Id
+                    if(o1.GetRunningId() > o2.GetRunningId())
+                        return -1;
+                    else
+                        return 1;
+                }
+            }
+
+            /*if (o1.GetWidth() != o2.GetWidth())
+                return Math.min(o1.GetWidth(), o2.GetWidth());
+            else if (o1.GetWeight() != o2.GetWeight())
+                return Math.min(o1.GetWeight(), o2.GetWeight());
+            else {
+                return Math.min(o1.GetRunningId(), o2.GetRunningId());
+            }*/
+        }
+
+
+
+
+
+
+
+            /*
+            // First compare the widths, return highest width
+            if(o1.GetWidth() > o2.GetWidth())
+                return o1.GetWidth();
+            else if(o1.GetWidth() < o2.GetWidth())
+                return o2.GetWidth();
+            else { // if widths are equal, compare weight
+                // Compare weights, return highest weight
+                if(o1.GetWeight() > o2.GetWeight())
+                    return o1.GetWeight();
+                else if(o1.GetWeight() < o2.GetWeight())
+                    return o2.GetWeight();
+                else { // if width and weight are the same, sort by running Id
+                    if(o1.GetRunningId() < o2.GetRunningId())
+                        return o1.GetRunningId();
+                    else
+                        return o2.GetRunningId();
+                }
+            }
+        }*/
+    }
+
+    // http://www.geeksforgeeks.org/check-whether-binary-tree-full-binary-tree-not/
+    static class BTNode {
+        //int data;
+        BTNode left, right;
+        public BTNode() {
+            left = right = null;
+        }
+    }
+
+    // http://www.geeksforgeeks.org/check-whether-binary-tree-full-binary-tree-not/
+    private static boolean IsFullBinaryTree(com.company.Main.BTNode node) {
+        // empty tree
+        if(node == null)
+            return true;
+        // child nodes are both null, therefore a full tree
+        if(node.left == null && node.right == null)
+            return true;
+        // if both child nodes are not null, recursively check them
+        if(node.left != null && node.right != null)
+            return (IsFullBinaryTree(node.left) && IsFullBinaryTree(node.right));
+        // if none work, you don't have a full tree
+        return false;
     }
 
     // Returns true if two rectangles (l1, r1) and (l2, r2)  do not overlap
@@ -746,39 +1029,39 @@ public class Main {
         return -1;
     }
 
-    /*  Class Node  */
-    static class Node {
+    /*  Class LLNode  */
+    static class LLNode {
         protected int data;
-        protected Node link;
+        protected LLNode link;
 
         /*  Constructor  */
-        public Node() {
+        public LLNode() {
             link = null;
             data = 0;
         }
 
         /*  Constructor  */
-        public Node(int d, Node n) {
+        public LLNode(int d, LLNode n) {
             data = d;
             link = n;
         }
 
-        /*  Function to set link to next Node  */
-        public void setLink(Node n) {
+        /*  Function to set link to next LLNode  */
+        public void setLink(LLNode n) {
             link = n;
         }
 
-        /*  Function to set data to current Node  */
+        /*  Function to set data to current LLNode  */
         public void setData(int d) {
             data = d;
         }
 
         /*  Function to get link to next node  */
-        public Node getLink() {
+        public LLNode getLink() {
             return link;
         }
 
-        /*  Function to get data from current Node  */
+        /*  Function to get data from current LLNode  */
         public int getData() {
             return data;
         }
@@ -786,8 +1069,8 @@ public class Main {
 
     /* Class linkedList */
     static class linkedList {
-        protected Node start;
-        protected Node end;
+        protected LLNode start;
+        protected LLNode end;
         public int size;
 
         /*  Constructor  */
@@ -809,7 +1092,7 @@ public class Main {
 
         /*  Function to insert an element at begining  */
         public void insertAtStart(int val) {
-            Node nptr = new Node(val, null);
+            LLNode nptr = new LLNode(val, null);
             size++;
             if (start == null) {
                 start = nptr;
@@ -822,7 +1105,7 @@ public class Main {
 
         /*  Function to insert an element at end  */
         public void insertAtEnd(int val) {
-            Node nptr = new Node(val, null);
+            LLNode nptr = new LLNode(val, null);
             size++;
             if (start == null) {
                 start = nptr;
@@ -835,12 +1118,12 @@ public class Main {
 
         /*  Function to insert an element at position  */
         public void insertAtPos(int val, int pos) {
-            Node nptr = new Node(val, null);
-            Node ptr = start;
+            LLNode nptr = new LLNode(val, null);
+            LLNode ptr = start;
             pos = pos - 1;
             for (int i = 1; i < size; i++) {
                 if (i == pos) {
-                    Node tmp = ptr.getLink();
+                    LLNode tmp = ptr.getLink();
                     ptr.setLink(nptr);
                     nptr.setLink(tmp);
                     break;
@@ -858,8 +1141,8 @@ public class Main {
                 return;
             }
             if (pos == size) {
-                Node s = start;
-                Node t = start;
+                LLNode s = start;
+                LLNode t = start;
                 while (s != end) {
                     t = s;
                     s = s.getLink();
@@ -869,11 +1152,11 @@ public class Main {
                 size--;
                 return;
             }
-            Node ptr = start;
+            LLNode ptr = start;
             pos = pos - 1;
             for (int i = 1; i < size - 1; i++) {
                 if (i == pos) {
-                    Node tmp = ptr.getLink();
+                    LLNode tmp = ptr.getLink();
                     tmp = tmp.getLink();
                     ptr.setLink(tmp);
                     break;
@@ -894,7 +1177,7 @@ public class Main {
                 System.out.println(start.getData());
                 return;
             }
-            Node ptr = start;
+            LLNode ptr = start;
             System.out.print(start.getData() + "->");
             ptr = start.getLink();
             while (ptr.getLink() != null) {
