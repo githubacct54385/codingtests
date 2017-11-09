@@ -158,7 +158,16 @@ public class Main {
         if (IsFullBinaryTree(treeRoot))
             System.out.print("The binary tree is full");
         else
-            System.out.print("The binary tree is not full");
+            System.out.print("The binary tree is not full\n\n\n");
+
+
+
+        /*int val[] = {10, 40, 30, 50};
+        int wt[] = {5, 4, 6, 3};
+        int W = 10;
+        System.out.println("\n\n\n" + KnapSackDynamic(val, wt, W));*/
+
+
 
 
         try {
@@ -183,17 +192,39 @@ public class Main {
             // Weight: Items must be less than or equal to 1000 kg per module.
             // First fill A, then B, then C
 
-            /*Collections.sort(itemsList, new Comparator<Item>() {
+            // new idea: sort by width, then height
+            //Collections.sort(itemsList, new ItemComparator());
+
+            Collections.sort(itemsList, new Comparator<Item>() {
                 @Override
                 public int compare(Item o1, Item o2) {
-                    return o1.width - o2.width;
+                    int comp1 = Integer.compare(o1.GetWidth(), o2.GetWidth());
+                    if(comp1 == 1) {
+                        return -1;
+                    } else if(comp1 == -1) {
+                        return 1;
+                    }
+                    else {
+                        int weightComp = Integer.compare(o1.GetWeight(), o2.GetWeight());
+                        if(weightComp == 1)
+                            return -1;
+                        else if(weightComp == -1)
+                            return 1;
+                        return weightComp;
+                    }
                 }
-            });*/
+            });
+
+            for (int i = 0; i < itemsList.size(); i++) {
+                System.out.println("Running Id: " + itemsList.get(i).runningId
+                        + " ,Width: " + itemsList.get(i).width + " , Weight: " + itemsList.get(i).weight);
+            }
+
 
             // sort by width, height, and running Id
-            Collections.sort(itemsList, new ItemComparator());
+            //Collections.sort(itemsList, new ItemComparator());
             // now try to place them into modules starting with A, then B, then C
-            int index = 0;
+            //int index = 0;
             ArrayList<Item> aGroup = new ArrayList<>();
             ArrayList<Item> bGroup = new ArrayList<>();
             ArrayList<Item> cGroup = new ArrayList<>();
@@ -204,6 +235,116 @@ public class Main {
             boolean bGroupFinish = false;
             boolean cGroupFinish = false;
 
+            // Try something new: Use a greedy approach.
+            // Objective: Get as many items onto a module and under the width and weight requirements
+
+            //Knapsack(1000, 1100, itemsList, itemsList.size());
+
+            /*int numItemsGrouped = 0;
+            int widthSum2 = 0;
+            int weightSum2 = 0;
+            for(int i = 0; i < itemsList.size(); i++) {
+                if(i == 0 && itemsList.get(0).GetWidth() < 1100 && itemsList.get(0).GetWeight() < 1000) {
+                    widthSum2 += itemsList.get(0).GetWidth();
+                    weightSum2 += itemsList.get(0).GetWeight();
+                    numItemsGrouped++;
+                } else {
+                    if(widthSum2 + itemsList.get(i).GetWidth() > 1100 || weightSum2 + itemsList.get(i).GetWeight() > 1000)
+                    {
+                        System.out.println("Width: " + widthSum2 + " Weight: " + weightSum2 + " Num Items: " + numItemsGrouped);
+                        widthSum2 = 0;
+                        weightSum2 = 0;
+                        numItemsGrouped = 0;
+                        i--;
+                    }
+                    else {
+                        widthSum2 += itemsList.get(i).GetWidth();
+                        weightSum2 += itemsList.get(i).GetWeight();
+                        numItemsGrouped++;
+                    }
+                }
+            }*/
+
+
+            // try a O(N)^2 method to find the maximum sum of width and weight...
+
+            //System.out.println("\n\n Max Sub Array: " + maxSubArraySum(itemsList));
+            //System.out.println("\n\n\n\n Max under limit" + MaxUnderLimit(itemsList, itemsList.size()));
+            //System.out.println("\n\n Max Sum2 " + maximumSum(itemsList, 1100));
+
+            /*int maxSum = 0;
+            int potentialSum;
+            int lastAddition = 0;
+            Stack<Item> includedRunningIds = new Stack<>();
+            Stack<Item> tempRunningIds = new Stack<>();
+            for(int i = 0; i < itemsList.size(); i++) {
+                potentialSum = itemsList.get(i).GetWidth();
+                tempRunningIds.add(itemsList.get(i));
+                for(int j = 0; j < itemsList.size(); j++) {
+                    if(i != j) {
+                        if(potentialSum + itemsList.get(j).GetWidth() <= 1100) {
+                            potentialSum += itemsList.get(j).GetWidth();
+                            lastAddition = itemsList.get(j).GetWidth();
+                            tempRunningIds.add(itemsList.get(j));
+                        } else {
+                            if(lastAddition != 0) {
+                                potentialSum -= lastAddition;
+                                tempRunningIds.pop();
+                            }
+                        }
+                    }
+                }
+                if(potentialSum > maxSum) {
+                    includedRunningIds = tempRunningIds;
+                    tempRunningIds.clear();
+                    maxSum = potentialSum;
+                }
+                lastAddition = 0;
+            }*/
+
+
+            Stack<Item> groupedItems = GroupedItemsUnderLimit(itemsList);
+            aGroup.addAll(groupedItems);
+            for(int i = 0; i < aGroup.size(); i++) {
+                for(int j = 0; j < itemsList.size(); j++) {
+                    if(aGroup.get(i).GetRunningId() == itemsList.get(j).GetRunningId()) {
+                        itemsList.remove(j);
+                        break;
+                    }
+                }
+            }
+
+            // now handle the B group
+            groupedItems = GroupedItemsUnderLimit(itemsList);
+            if(groupedItems.size() > 0) {
+                bGroup.addAll(groupedItems);
+                for(int i = 0; i < bGroup.size(); i++) {
+                    for(int j = 0; j < itemsList.size(); j++) {
+                        if(bGroup.get(i).GetRunningId() == itemsList.get(j).GetRunningId()) {
+                            itemsList.remove(j);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // now handle c group
+            groupedItems = GroupedItemsUnderLimit(itemsList);
+            if(groupedItems.size() > 0) {
+                cGroup.addAll(groupedItems);
+                for(int i = 0; i < cGroup.size(); i++) {
+                    for(int j = 0; j < itemsList.size(); j++) {
+                        if(cGroup.get(i).GetRunningId() == itemsList.get(j).GetRunningId()) {
+                            itemsList.remove(j);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            //int index = itemsList.size() - 1;
+            /*int index = 0;
+            //while(index >= 0) {
             while (index < itemsList.size()) {
                 if ((widthSum + itemsList.get(index).GetWidth() <= 1100) && (weightSum + itemsList.get(index).GetWeight() <= 1000)) {
                     if (!aGroupFinish)
@@ -231,12 +372,12 @@ public class Main {
                     }
 
                 }
-            }
+            }*/
 
-            for (int i = 0; i < itemsList.size(); i++) {
+            /*for (int i = 0; i < itemsList.size(); i++) {
                 System.out.println("Running Id: " + itemsList.get(i).runningId
                         + " ,Width: " + itemsList.get(i).width + " , Weight: " + itemsList.get(i).weight);
-            }
+            }*/
 
 
             // print A Group, B Group, C Group
@@ -306,6 +447,178 @@ public class Main {
 
     }
 
+    private static Stack<Item> GroupedItemsUnderLimit(ArrayList<Item> itemsList) {
+        if(itemsList.size() == 0)
+            return new Stack<>();
+        int maxWidthSum = 0;
+        int maxWeightSum = 0;
+        int potentialWidthSum;
+        int potentialWeightSum;
+        int lastWidthAddition = 0;
+        int lastWeightAddition = 0;
+        Stack<Item> includedRunningIds = new Stack<>();
+        Stack<Item> tempRunningIds = new Stack<>();
+        for(int i = 0; i < itemsList.size(); i++) {
+            potentialWidthSum = itemsList.get(i).GetWidth();
+            potentialWeightSum = itemsList.get(i).GetWeight();
+            tempRunningIds.add(itemsList.get(i));
+            for(int j = 0; j < itemsList.size(); j++) {
+                if(i != j) {
+                    if(potentialWidthSum + itemsList.get(j).GetWidth() < 1100 &&
+                            potentialWeightSum + itemsList.get(j).GetWeight() < 1000) {
+                        potentialWidthSum += itemsList.get(j).GetWidth();
+                        potentialWeightSum += itemsList.get(j).GetWeight();
+                        lastWidthAddition = itemsList.get(j).GetWidth();
+                        lastWeightAddition = itemsList.get(j).GetWeight();
+                        tempRunningIds.add(itemsList.get(j));
+                    } else if(potentialWidthSum + itemsList.get(j).GetWidth() == 1100 ||
+                            potentialWeightSum + itemsList.get(j).GetWidth() == 1100) {
+                        // done, no need to add anything
+                        potentialWidthSum += itemsList.get(j).GetWidth();
+                        potentialWeightSum += itemsList.get(j).GetWeight();
+                        tempRunningIds.add(itemsList.get(j));
+                    } else {
+                        if(lastWidthAddition != 0 || lastWeightAddition != 0) {
+                            potentialWidthSum -= lastWidthAddition;
+                            potentialWeightSum -= lastWeightAddition;
+                            tempRunningIds.pop();
+                        }
+                    }
+                }
+            }
+            if(potentialWidthSum > maxWidthSum) {
+                includedRunningIds = new Stack<>();
+                for(int k = 0; k < tempRunningIds.size(); k++) {
+                    includedRunningIds.push(tempRunningIds.get(k));
+                }
+                tempRunningIds.clear();
+                maxWidthSum = potentialWidthSum;
+                maxWeightSum = potentialWeightSum;
+            }
+            lastWidthAddition = 0;
+            lastWeightAddition = 0;
+        }
+        return includedRunningIds;
+    }
+
+
+    private static int maxSubArraySum(ArrayList<Item> items)
+    {
+        int size = items.size();
+        int max_so_far = Integer.MIN_VALUE, max_ending_here = 0;
+
+        for (int i = 0; i < size; i++)
+        {
+            max_ending_here = max_ending_here + items.get(i).GetWidth();
+            if (max_so_far < max_ending_here && max_ending_here < 1100)
+                max_so_far = max_ending_here;
+            if (max_ending_here < 0)
+                max_ending_here = 0;
+        }
+        return max_so_far;
+    }
+
+    // https://stackoverflow.com/questions/19628775/maximum-array-sum-with-limit
+    private static int MaxUnderLimit (ArrayList<Item> items, int n) {
+        int sum=0,ans=0,p1=0,p2=0;
+        while (p2<n) {
+            sum+=items.get(p2).GetWidth();
+            p2++;
+            while (sum>=1100 && p1<p2) {
+                sum-=items.get(p1).GetWidth();
+                p1++;
+            }
+            ans = Math.max(ans, sum);
+        }
+        while (p1<n) {
+            sum-=items.get(p1).GetWidth();
+            p1++;
+            if (sum<=1100) ans=Math.max(ans,sum);
+        }
+        return ans;
+    }
+
+
+    public static int maximumSum(ArrayList<Item> array, int t){
+        int maxSum = 0;
+        int curSum = 0;
+        int start = 0;
+        int end = 0;
+        while(start < array.size()){
+
+            if(curSum > maxSum && curSum <= t){
+                maxSum = curSum;
+            }
+            if(curSum <= t && end < array.size()){
+                curSum += array.get(end).GetWidth();
+                end += 1;
+
+            }
+            else{
+                curSum -= array.get(start).GetWidth();
+                start+= 1;
+            }
+        }
+        return maxSum;
+    }
+
+
+    public static int KnapSackDynamic(int val[], int wt[], int W) {
+        int N = wt.length; // Get the total number of items. Could be wt.length or val.length. Doesn't matter
+        int[][] V = new int[N + 1][W + 1]; //Create a matrix. Items are in rows and weight at in columns +1 on each side
+        //What if the knapsack's capacity is 0 - Set all columns at row 0 to be 0
+        for (int col = 0; col <= W; col++) {
+            V[0][col] = 0;
+        }
+        //What if there are no items at home.  Fill the first row with 0
+        for (int row = 0; row <= N; row++) {
+            V[row][0] = 0;
+        }
+        for (int item=1;item<=N;item++){
+            //Let's fill the values row by row
+            for (int weight=1;weight<=W;weight++){
+                //Is the current items weight less than or equal to running weight
+                if (wt[item-1]<=weight){
+                    //Given a weight, check if the value of the current item + value of the item that we could afford with the remaining weight
+                    //is greater than the value without the current item itself
+                    V[item][weight]=Math.max (val[item-1]+V[item-1][weight-wt[item-1]], V[item-1][weight]);
+                }
+                else {
+                    //If the current item's weight is more than the running weight, just carry forward the value without the current item
+                    V[item][weight]=V[item-1][weight];
+                }
+            }
+        }
+        //Printing the matrix
+        for (int[] rows : V) {
+            for (int col : rows) {
+                System.out.format("%5d", col);
+            }
+            System.out.println();
+        }
+        return V[N][W];
+    }
+
+
+
+    private static int Knapsack(int mWeight, int mWidth, ArrayList<Item> arr, int n) {
+        // base case
+        if(n == 0 || mWeight == 0)
+            return 0;
+        if(arr.get(n - 1).GetWeight() > mWeight ||
+                arr.get(n - 1).GetWidth() > mWidth)
+            return Knapsack(mWeight, mWidth, arr, n - 1);
+        else
+        {
+            int lWeight = arr.get(n - 1).GetWeight();
+            int maxWeight = Math.max(lWeight + Knapsack(mWeight - arr.get(n-1).GetWeight(), mWidth, arr, n -1),
+                    Knapsack(mWeight, mWidth, arr, n-1));
+
+            System.out.println("Max Weight for n= " + n + " items is: " + maxWeight);
+            return maxWeight;
+        }
+    }
+
     private static int SumModuleWidth(ArrayList<Item> items) {
         int sum = 0;
         for(int i = 0; i < items.size(); i++) {
@@ -348,7 +661,6 @@ public class Main {
             this.width = Integer.parseInt(splitStr[1]);
             this.weight = Integer.parseInt(splitStr[2]);
         }
-
     }
 
     private static class ItemComparator implements Comparator<Item> {
