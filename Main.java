@@ -8,9 +8,6 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         // write your code here
-        System.out.println("CodilityExamQ1: ");
-        System.out.println(CodilityExamQ1("09:42", "11:39"));
-
         System.out.println("Binary Gap: ");
         System.out.println(BinaryGap(1041));
 
@@ -115,7 +112,7 @@ public class Main {
 
         System.out.println("\nRectangular Overlapping Plots");
         Point2D l1 = new Point2D(1, 1), r1 = new Point2D(3, 3);
-        Point2D l2 = new Point2D(4, 4), r2 = new Point2D(5, 5);
+        Point2D l2 = new Point2D(2, 2), r2 = new Point2D(5, 5);
         System.out.println("Rectangle A: (" + (int) l1.getX() + ", " + (int) l1.getY() + "), (" + (int) r1.getX() + ", " + (int) r1.getY() + ")");
         System.out.println("Rectangle B: (" + (int) l2.getX() + ", " + (int) l2.getY() + "), (" + (int) r2.getX() + ", " + (int) r2.getY() + ")");
 
@@ -161,13 +158,51 @@ public class Main {
             System.out.print("The binary tree is not full\n\n\n");
 
 
+        System.out.println("\n\n\nStock Prices");
+        int stocksPrices[] = {4, 13, 0, 12, 6, 5};
+        System.out.println(GetMaxProfit(stocksPrices));
 
-        /*int val[] = {10, 40, 30, 50};
-        int wt[] = {5, 4, 6, 3};
-        int W = 10;
-        System.out.println("\n\n\n" + KnapSackDynamic(val, wt, W));*/
+        System.out.println("\nLinked List Testing");
+        MyLinkedList myList = new MyLinkedList();
+        myList.PushBack(0);
+        myList.PushBack(1);
+        myList.PushBack(2);
+        myList.Remove(2);
+        myList.Remove(1);
+        myList.Remove(0);
+        //myList.PushBack(1);
+        //myList.PushBack(2);
+        //myList.PushFront(0);
+        //myList.PushFront(-1);
+        myList.Print();
 
 
+        //LogisticsProblem();
+
+        //=============================================
+        // Additional In Progress Coding Example Tests
+        //=============================================
+
+        //int B[] = {1,3,2,5,4,7,8,9,13,12,11,10};
+        //Arrays.sort(B);
+        //PrintArray(B);
+        //System.out.println(BinarySearch(B, 4));
+
+
+
+/*        //int arr[] = {0, 10, 2, -10, -20};
+        int arr[] = {1, 2, 3, 3, 5, 4, 2, 6, -12, -14, -34, 0, 33, 55 };
+        int arr_size = arr.length;
+        int missing = findMissing(arr, arr_size);
+        System.out.println("The smallest positive missing number is "+
+                missing);*/
+
+        //int A[] = {1, 50, 50, 50, 1};
+        //System.out.println(solution2(A));
+
+    }
+
+    private static void LogisticsProblem() {
         try {
             System.out.println("\n\nPlease enter the Running Id, Width, and Weight separated by spaces.  Then press Enter.  If you are done, press Enter without inputting any thing.");
             ArrayList<Item> itemsList = new ArrayList<>();
@@ -193,16 +228,15 @@ public class Main {
                 @Override
                 public int compare(Item o1, Item o2) {
                     int comp1 = Integer.compare(o1.GetWidth(), o2.GetWidth());
-                    if(comp1 == 1) {
+                    if (comp1 == 1) {
                         return -1;
-                    } else if(comp1 == -1) {
+                    } else if (comp1 == -1) {
                         return 1;
-                    }
-                    else {
+                    } else {
                         int weightComp = Integer.compare(o1.GetWeight(), o2.GetWeight());
-                        if(weightComp == 1)
+                        if (weightComp == 1)
                             return -1;
-                        else if(weightComp == -1)
+                        else if (weightComp == -1)
                             return 1;
                         return weightComp;
                     }
@@ -218,9 +252,9 @@ public class Main {
             // They are then removed from itemsList as they have already been processed
             Stack<Item> groupedItems = GroupedItemsUnderLimit(itemsList);
             aGroup.addAll(groupedItems);
-            for(int i = 0; i < aGroup.size(); i++) {
-                for(int j = 0; j < itemsList.size(); j++) {
-                    if(aGroup.get(i).GetRunningId() == itemsList.get(j).GetRunningId()) {
+            for (int i = 0; i < aGroup.size(); i++) {
+                for (int j = 0; j < itemsList.size(); j++) {
+                    if (aGroup.get(i).GetRunningId() == itemsList.get(j).GetRunningId()) {
                         itemsList.remove(j);
                         break;
                     }
@@ -229,11 +263,11 @@ public class Main {
 
             // now handle the B group the same as before but with a smaller itemsList
             groupedItems = GroupedItemsUnderLimit(itemsList);
-            if(groupedItems.size() > 0) {
+            if (groupedItems.size() > 0) {
                 bGroup.addAll(groupedItems);
-                for(int i = 0; i < bGroup.size(); i++) {
-                    for(int j = 0; j < itemsList.size(); j++) {
-                        if(bGroup.get(i).GetRunningId() == itemsList.get(j).GetRunningId()) {
+                for (int i = 0; i < bGroup.size(); i++) {
+                    for (int j = 0; j < itemsList.size(); j++) {
+                        if (bGroup.get(i).GetRunningId() == itemsList.get(j).GetRunningId()) {
                             itemsList.remove(j);
                             break;
                         }
@@ -243,11 +277,11 @@ public class Main {
 
             // now handle c group same as A and B
             groupedItems = GroupedItemsUnderLimit(itemsList);
-            if(groupedItems.size() > 0) {
+            if (groupedItems.size() > 0) {
                 cGroup.addAll(groupedItems);
-                for(int i = 0; i < cGroup.size(); i++) {
-                    for(int j = 0; j < itemsList.size(); j++) {
-                        if(cGroup.get(i).GetRunningId() == itemsList.get(j).GetRunningId()) {
+                for (int i = 0; i < cGroup.size(); i++) {
+                    for (int j = 0; j < itemsList.size(); j++) {
+                        if (cGroup.get(i).GetRunningId() == itemsList.get(j).GetRunningId()) {
                             itemsList.remove(j);
                             break;
                         }
@@ -296,30 +330,6 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-        //=============================================
-        // Additional In Progress Coding Example Tests
-        //=============================================
-
-        //int B[] = {1,3,2,5,4,7,8,9,13,12,11,10};
-        //Arrays.sort(B);
-        //PrintArray(B);
-        //System.out.println(BinarySearch(B, 4));
-
-        //int stocksPrices[] = {10, 9, 8, 7, 6, 5};
-        //System.out.println(GetMaxProfit(stocksPrices));
-
-/*        //int arr[] = {0, 10, 2, -10, -20};
-        int arr[] = {1, 2, 3, 3, 5, 4, 2, 6, -12, -14, -34, 0, 33, 55 };
-        int arr_size = arr.length;
-        int missing = findMissing(arr, arr_size);
-        System.out.println("The smallest positive missing number is "+
-                missing);*/
-
-        //int A[] = {1, 50, 50, 50, 1};
-        //System.out.println(solution2(A));
-
     }
 
     // This function returns a Stack object with Items placed into a module as best as I vcan
@@ -329,7 +339,7 @@ public class Main {
     private static Stack<Item> GroupedItemsUnderLimit(ArrayList<Item> itemsList) {
         final int MAX_WIDTH = 1100;
         final int MAX_WEIGHT = 1000;
-        if(itemsList.size() == 0)
+        if (itemsList.size() == 0)
             return new Stack<>();
         int maxWidthSum = 0;
         int maxWeightSum = 0;
@@ -339,15 +349,15 @@ public class Main {
         int lastWeightAddition = 0;
         Stack<Item> includedRunningIds = new Stack<>(); // this is the return value
         Stack<Item> tempRunningIds = new Stack<>(); // temp list of Items I want to collect together
-        for(int i = 0; i < itemsList.size(); i++) {
+        for (int i = 0; i < itemsList.size(); i++) {
             potentialWidthSum = itemsList.get(i).GetWidth();
             potentialWeightSum = itemsList.get(i).GetWeight();
             tempRunningIds.add(itemsList.get(i));
-            for(int j = 0; j < itemsList.size(); j++) {
-                if(i != j) {
+            for (int j = 0; j < itemsList.size(); j++) {
+                if (i != j) {
                     // As long as we are below the threshold, add them to the width and weight sum values
                     // and store the Items we have looked as so far
-                    if(potentialWidthSum + itemsList.get(j).GetWidth() < MAX_WIDTH &&
+                    if (potentialWidthSum + itemsList.get(j).GetWidth() < MAX_WIDTH &&
                             potentialWeightSum + itemsList.get(j).GetWeight() < MAX_WEIGHT) {
                         potentialWidthSum += itemsList.get(j).GetWidth();
                         potentialWeightSum += itemsList.get(j).GetWeight();
@@ -357,7 +367,7 @@ public class Main {
                     }
                     // If we have met the width or weight thresholds, not need to record the
                     // variables lastWidthAddition or lastWeightAddition
-                    else if(potentialWidthSum + itemsList.get(j).GetWidth() == MAX_WIDTH ||
+                    else if (potentialWidthSum + itemsList.get(j).GetWidth() == MAX_WIDTH ||
                             potentialWeightSum + itemsList.get(j).GetWeight() == MAX_WEIGHT) {
                         potentialWidthSum += itemsList.get(j).GetWidth();
                         potentialWeightSum += itemsList.get(j).GetWeight();
@@ -366,7 +376,7 @@ public class Main {
                     // Check the j value, if we are at the end of the array, no need to deduct the width
                     // and weight sums
                     else {
-                        if((j < itemsList.size() - 1) && (lastWidthAddition != 0 || lastWeightAddition != 0)) {
+                        if ((j < itemsList.size() - 1) && (lastWidthAddition != 0 || lastWeightAddition != 0)) {
                             potentialWidthSum -= lastWidthAddition;
                             potentialWeightSum -= lastWeightAddition;
                             tempRunningIds.pop();
@@ -375,9 +385,9 @@ public class Main {
                 }
             }
             // Do we have a new width sum?  If so, let's record these values.
-            if(potentialWidthSum > maxWidthSum) {
+            if (potentialWidthSum > maxWidthSum) {
                 includedRunningIds = new Stack<>();
-                for(int k = 0; k < tempRunningIds.size(); k++) {
+                for (int k = 0; k < tempRunningIds.size(); k++) {
                     includedRunningIds.push(tempRunningIds.get(k));
                 }
                 tempRunningIds.clear();
@@ -410,7 +420,7 @@ public class Main {
 
         private Item(String str) throws Exception {
             String[] splitStr = str.split(" ");
-            if(splitStr.length != 3) {
+            if (splitStr.length != 3) {
                 throw new Exception("Item input is in wrong format.  Please enter in the format RunningId Width Weight");
             }
             this.runningId = Integer.parseInt(splitStr[0]);
@@ -423,6 +433,7 @@ public class Main {
     static class BTNode {
         //int data;
         BTNode left, right;
+
         public BTNode() {
             left = right = null;
         }
@@ -431,13 +442,13 @@ public class Main {
     // http://www.geeksforgeeks.org/check-whether-binary-tree-full-binary-tree-not/
     private static boolean IsFullBinaryTree(com.company.Main.BTNode node) {
         // empty tree
-        if(node == null)
+        if (node == null)
             return true;
         // child nodes are both null, therefore a full tree
-        if(node.left == null && node.right == null)
+        if (node.left == null && node.right == null)
             return true;
         // if both child nodes are not null, recursively check them
-        if(node.left != null && node.right != null)
+        if (node.left != null && node.right != null)
             return (IsFullBinaryTree(node.left) && IsFullBinaryTree(node.right));
         // if none work, you don't have a full tree
         return false;
@@ -458,23 +469,20 @@ public class Main {
         private LinkedList[] adj; //Adjacency Lists
 
         // Constructor
-        Graph(int v)
-        {
+        Graph(int v) {
             V = v;
             adj = new LinkedList[v];
-            for (int i=0; i<v; ++i)
+            for (int i = 0; i < v; ++i)
                 adj[i] = new LinkedList();
         }
 
         // Function to add an edge into the graph
-        void addEdge(int v,int w)
-        {
+        void addEdge(int v, int w) {
             adj[v].add(w);
         }
 
         // prints BFS traversal from a given source s
-        void BFS(int s)
-        {
+        void BFS(int s) {
             // Mark all the vertices as not visited(By default
             // set as false)
             boolean visited[] = new boolean[V];
@@ -483,14 +491,13 @@ public class Main {
             LinkedList<Integer> queue = new LinkedList<Integer>();
 
             // Mark the current node as visited and enqueue it
-            visited[s]=true;
+            visited[s] = true;
             queue.add(s);
 
-            while (queue.size() != 0)
-            {
+            while (queue.size() != 0) {
                 // Dequeue a vertex from queue and print it
                 s = queue.poll();
-                System.out.print(s+" ");
+                System.out.print(s + " ");
 
                 // Get all adjacent vertices of the dequeued vertex s
                 // If a adjacent has not been visited, then mark it
@@ -509,20 +516,19 @@ public class Main {
     // Dijkstra Solution from
     // http://www.geeksforgeeks.org/greedy-algorithms-set-6-dijkstras-shortest-path-algorithm/
     private static final int V = 9;
+
     private static void PrintDijkstraSolution(int dist[], int n) {
         System.out.println("Vertex   Distance from Source");
         for (int i = 0; i < V; i++)
-            System.out.println(i+" tt "+dist[i]);
+            System.out.println(i + " tt " + dist[i]);
     }
 
-    private static int MinDistance(int dist[], Boolean sptSet[])
-    {
+    private static int MinDistance(int dist[], Boolean sptSet[]) {
         // Initialize min value
-        int min = Integer.MAX_VALUE, min_index=-1;
+        int min = Integer.MAX_VALUE, min_index = -1;
 
         for (int v = 0; v < V; v++)
-            if (!sptSet[v] && dist[v] <= min)
-            {
+            if (!sptSet[v] && dist[v] <= min) {
                 min = dist[v];
                 min_index = v;
             }
@@ -533,8 +539,7 @@ public class Main {
     // Funtion that implements Dijkstra's single source shortest path
     // algorithm for a graph represented using adjacency matrix
     // representation
-    static void dijkstra(int graph[][], int src)
-    {
+    static void dijkstra(int graph[][], int src) {
         int dist[] = new int[V]; // The output array. dist[i] will hold
         // the shortest distance from src to i
 
@@ -543,8 +548,7 @@ public class Main {
         Boolean sptSet[] = new Boolean[V];
 
         // Initialize all distances as INFINITE and stpSet[] as false
-        for (int i = 0; i < V; i++)
-        {
+        for (int i = 0; i < V; i++) {
             dist[i] = Integer.MAX_VALUE;
             sptSet[i] = false;
         }
@@ -553,8 +557,7 @@ public class Main {
         dist[src] = 0;
 
         // Find shortest path for all vertices
-        for (int count = 0; count < V-1; count++)
-        {
+        for (int count = 0; count < V - 1; count++) {
             // Pick the minimum distance vertex from the set of vertices
             // not yet processed. u is always equal to src in first
             // iteration.
@@ -570,18 +573,15 @@ public class Main {
                 // Update dist[v] only if is not in sptSet, there is an
                 // edge from u to v, and total weight of path from src to
                 // v through u is smaller than current value of dist[v]
-                if (!sptSet[v] && graph[u][v]!=0 &&
+                if (!sptSet[v] && graph[u][v] != 0 &&
                         dist[u] != Integer.MAX_VALUE &&
-                        dist[u]+graph[u][v] < dist[v])
+                        dist[u] + graph[u][v] < dist[v])
                     dist[v] = dist[u] + graph[u][v];
         }
 
         // print the constructed distance array
         PrintDijkstraSolution(dist, V);
     }
-
-
-
 
 
     private static int OddOccurencesInArray(int[] A) {
@@ -595,14 +595,14 @@ public class Main {
     private static int StoneWall(int H[], int N) {
         Stack<Integer> activeWallHeights = new Stack<>();
         int numBlocks = 0;
-        for(int i = 0; i < H.length; i++) {
-            while(!activeWallHeights.empty()
+        for (int i = 0; i < H.length; i++) {
+            while (!activeWallHeights.empty()
                     && activeWallHeights.peek() > H[i]) // The next wall height is lower than the top of the stack, pop the stack until all higher blocks are gone
                 activeWallHeights.pop();
-            if(activeWallHeights.empty()) { // if empty stack, push new wall height and increment count of blocks
+            if (activeWallHeights.empty()) { // if empty stack, push new wall height and increment count of blocks
                 activeWallHeights.push(H[i]);
                 numBlocks++;
-            } else if(!activeWallHeights.empty()
+            } else if (!activeWallHeights.empty()
                     && activeWallHeights.peek() != H[i]) { // if not empty and new height, push and increment
                 activeWallHeights.push(H[i]);
                 numBlocks++;
@@ -717,9 +717,9 @@ public class Main {
     }
 
     private static void BubbleSort(int A[]) {
-        for(int i = 0; i < A.length - 1; i++) {
-            for(int j = 0; j < A.length - i - 1; j++) {
-                if(A[j] > A[j + 1]) Swap(A, j, j+1);
+        for (int i = 0; i < A.length - 1; i++) {
+            for (int j = 0; j < A.length - i - 1; j++) {
+                if (A[j] > A[j + 1]) Swap(A, j, j + 1);
             }
         }
     }
@@ -824,38 +824,6 @@ public class Main {
             total -= i;
         }
         return (int) total;
-    }
-
-    // Note: I did not get a perfect score on this
-    static int CodilityExamQ1(String E, String L) {
-        // Get Hours and Mins of Enter Time using SubString
-        String enterHrs = E.substring(0, E.indexOf(':'));
-        String enterMins = E.substring(E.indexOf(":") + 1);
-
-        // Get Hours and Mins of Exit Time using SubString
-        String exitHrs = L.substring(0, E.indexOf(':'));
-        String exitMins = L.substring(E.indexOf(":") + 1);
-
-        // Get Difference of Hours and Mins
-        int hrsDiff = Integer.parseInt(exitHrs) - Integer.parseInt(enterHrs);
-        int minsDiff = Integer.parseInt(exitMins) - Integer.parseInt(enterMins);
-
-        // Entrance cost is 2
-        int cost = 2;
-
-        // if stayed for at least one hour, add cost of 3.
-        if (hrsDiff >= 1 || minsDiff >= 0) {
-            cost += 3;
-            hrsDiff -= 1; // remove one hour from hrsDiff for the upcoming while loop
-        }
-
-        while (hrsDiff > 0) { // add cost 4 for each remaining hour, remove one hour each iteration
-            cost += 4;
-            hrsDiff--;
-        }
-        if (minsDiff > 0) cost += 4; // for remaining positive minutes, add cost of 4
-
-        return cost; // final cost
     }
 
     static int[] CyclicRotation(int A[], int k) {
@@ -1037,162 +1005,154 @@ public class Main {
         return -1;
     }
 
-    /*  Class LLNode  */
-    static class LLNode {
-        protected int data;
-        protected LLNode link;
 
-        /*  Constructor  */
-        public LLNode() {
-            link = null;
+    // Implementing a Linked List
+
+    // Node Class
+    static class MyLLNode {
+        private int data;
+        private MyLLNode link;
+
+        // Default Constructor
+        public MyLLNode() {
             data = 0;
+            link = null;
         }
 
-        /*  Constructor  */
-        public LLNode(int d, LLNode n) {
-            data = d;
-            link = n;
+        public MyLLNode(int data, MyLLNode link) {
+            this.data = data;
+            this.link = link;
         }
 
-        /*  Function to set link to next LLNode  */
-        public void setLink(LLNode n) {
-            link = n;
+        public void SetLink(MyLLNode link) {
+            this.link = link;
         }
 
-        /*  Function to set data to current LLNode  */
-        public void setData(int d) {
-            data = d;
+        public int GetData() {
+            return this.data;
         }
 
-        /*  Function to get link to next node  */
-        public LLNode getLink() {
-            return link;
+        public void SetData(int data) {
+            this.data = data;
         }
 
-        /*  Function to get data from current LLNode  */
-        public int getData() {
-            return data;
+        public MyLLNode GetLink() {
+            return this.link;
         }
     }
 
-    /* Class linkedList */
-    static class linkedList {
-        protected LLNode start;
-        protected LLNode end;
-        public int size;
+    static class MyLinkedList {
+        private MyLLNode start;
+        //private int size;
 
-        /*  Constructor  */
-        public linkedList() {
-            start = null;
-            end = null;
-            size = 0;
+        public int Size() {
+            //if(start == null) return 0;
+            // TODO Fix this later
+            return 1;
+            //return size;
         }
 
-        /*  Function to check if list is empty  */
-        public boolean isEmpty() {
+        public MyLinkedList() {
+            this.start = null;
+            //this.size = 0;
+        }
+
+        public boolean IsEmpty() {
             return start == null;
         }
 
-        /*  Function to get size of list  */
-        public int getSize() {
-            return size;
-        }
-
-        /*  Function to insert an element at begining  */
-        public void insertAtStart(int val) {
-            LLNode nptr = new LLNode(val, null);
-            size++;
+        public void Print() {
             if (start == null) {
-                start = nptr;
-                end = start;
-            } else {
-                nptr.setLink(start);
-                start = nptr;
-            }
-        }
-
-        /*  Function to insert an element at end  */
-        public void insertAtEnd(int val) {
-            LLNode nptr = new LLNode(val, null);
-            size++;
-            if (start == null) {
-                start = nptr;
-                end = start;
-            } else {
-                end.setLink(nptr);
-                end = nptr;
-            }
-        }
-
-        /*  Function to insert an element at position  */
-        public void insertAtPos(int val, int pos) {
-            LLNode nptr = new LLNode(val, null);
-            LLNode ptr = start;
-            pos = pos - 1;
-            for (int i = 1; i < size; i++) {
-                if (i == pos) {
-                    LLNode tmp = ptr.getLink();
-                    ptr.setLink(nptr);
-                    nptr.setLink(tmp);
-                    break;
-                }
-                ptr = ptr.getLink();
-            }
-            size++;
-        }
-
-        /*  Function to delete an element at position  */
-        public void deleteAtPos(int pos) {
-            if (pos == 1) {
-                start = start.getLink();
-                size--;
+                System.out.println("Singly Linked List is empty");
                 return;
             }
-            if (pos == size) {
-                LLNode s = start;
-                LLNode t = start;
-                while (s != end) {
-                    t = s;
-                    s = s.getLink();
-                }
-                end = t;
-                end.setLink(null);
-                size--;
-                return;
-            }
-            LLNode ptr = start;
-            pos = pos - 1;
-            for (int i = 1; i < size - 1; i++) {
-                if (i == pos) {
-                    LLNode tmp = ptr.getLink();
-                    tmp = tmp.getLink();
-                    ptr.setLink(tmp);
-                    break;
-                }
-                ptr = ptr.getLink();
-            }
-            size--;
-        }
-
-        /*  Function to display elements  */
-        public void display() {
             System.out.print("\nSingly Linked List = ");
-            if (size == 0) {
-                System.out.print("empty\n");
+            if (start.GetLink() == null) {
+                System.out.println(start.GetData());
                 return;
             }
-            if (start.getLink() == null) {
-                System.out.println(start.getData());
-                return;
+            MyLLNode ptr;
+            System.out.print(start.GetData() + "->");
+            ptr = start.GetLink();
+            while (ptr.GetLink() != null) {
+                System.out.print(ptr.GetData() + "->");
+                ptr = ptr.GetLink();
             }
-            LLNode ptr = start;
-            System.out.print(start.getData() + "->");
-            ptr = start.getLink();
-            while (ptr.getLink() != null) {
-                System.out.print(ptr.getData() + "->");
-                ptr = ptr.getLink();
+            System.out.print(ptr.GetData() + "\n");
+        }
+
+        void PushFront(int val) {
+            MyLLNode newNode = new MyLLNode(val, null);
+            if (start == null)
+                start = newNode;
+            else {
+                newNode.SetLink(start);
+                start = newNode;
             }
-            System.out.print(ptr.getData() + "\n");
+        }
+
+        void PushBack(int val) {
+            MyLLNode newNode = new MyLLNode(val, null);
+            if (start == null)
+                start = newNode; // the start is the new node
+            else if (start.GetLink() == null) {
+                start.SetLink(newNode); // attach newNode to the end of start
+            } else {
+                MyLLNode ptr = start.GetLink(); // iterate through all the nodes until the end and set the link
+                while (ptr.GetLink() != null)
+                    ptr = ptr.GetLink();
+                ptr.SetLink(newNode);
+            }
+        }
+
+        // Note: This array is zero-indexed.
+        void Insert(int val, int pos) {
+            if (pos == 0) {
+                PushFront(val);
+            } else {
+                try {
+                    MyLLNode newNode = new MyLLNode(val, null);
+                    MyLLNode ptr = start;
+                    int i = 1;
+                    while(i <= pos) {
+                        if(i == pos) {
+                            MyLLNode tmp = ptr.GetLink();
+                            ptr.SetLink(newNode);
+                            newNode.SetLink(tmp);
+                            break;
+                        }
+                        i++;
+                        ptr = ptr.GetLink();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        // Note: This array is zero-indexed.
+        void Remove(int pos) {
+            try {
+                if(pos == 0)
+                    start = start.GetLink();
+                else {
+                    MyLLNode ptr = start;
+                    int i = 1;
+                    while(i <= pos) {
+                        if(i == pos) {
+                            MyLLNode tmp = ptr.GetLink();
+                            tmp = tmp.GetLink();
+                            ptr.SetLink(tmp);
+                            break;
+                        }
+                        i++;
+                        ptr = ptr.GetLink();
+                    }
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }
