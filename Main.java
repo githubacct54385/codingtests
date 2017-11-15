@@ -170,11 +170,37 @@ public class Main {
         myList.Remove(2);
         myList.Remove(1);
         myList.Remove(0);
-        //myList.PushBack(1);
-        //myList.PushBack(2);
-        //myList.PushFront(0);
-        //myList.PushFront(-1);
         myList.Print();
+
+        System.out.println("\nBrackets");
+        String brackets1 = "()[][]";
+        if(Brackets(brackets1) == 1) System.out.println("The String: " + brackets1 + " is nested");
+        else System.out.println("The String: " + brackets1 + " is not nested");
+
+        String brackets2 = "([])";
+        if(Brackets(brackets2) == 1) System.out.println("The String: " + brackets2 + " is nested");
+        else System.out.println("The String: " + brackets2 + " is not nested");
+
+        String brackets3 = ")(";
+        if(Brackets(brackets3) == 1) System.out.println("The String: " + brackets3 + " is nested");
+        else System.out.println("The String: " + brackets3 + " is not nested");
+
+        System.out.println("\nNesting");
+        String nesting1 = "(()(())())";
+        String nesting2 = "())";
+        if(Nesting(nesting1) == 1)
+            System.out.println("The String: " + nesting1 + " is nested.");
+        else
+            System.out.println("The String: " + nesting1 + " is not nested.");
+
+        if(Nesting(nesting2) == 1)
+            System.out.println("The String: " + nesting2 + " is nested.");
+        else
+            System.out.println("The String: " + nesting2 + " is not nested.");
+
+
+
+
 
 
         //LogisticsProblem();
@@ -183,14 +209,7 @@ public class Main {
         // Additional In Progress Coding Example Tests
         //=============================================
 
-        //int B[] = {1,3,2,5,4,7,8,9,13,12,11,10};
-        //Arrays.sort(B);
-        //PrintArray(B);
-        //System.out.println(BinarySearch(B, 4));
-
-
-
-/*        //int arr[] = {0, 10, 2, -10, -20};
+/*      //int arr[] = {0, 10, 2, -10, -20};
         int arr[] = {1, 2, 3, 3, 5, 4, 2, 6, -12, -14, -34, 0, 33, 55 };
         int arr_size = arr.length;
         int missing = findMissing(arr, arr_size);
@@ -201,6 +220,72 @@ public class Main {
         //System.out.println(solution2(A));
 
     }
+
+    // https://codility.com/programmers/lessons/7-stacks_and_queues/nesting/
+    private static int Nesting(String s) {
+        int count = 0;
+        for(int i = 0; i < s.length(); i++) {
+            if(s.charAt(i) == '(') {
+                count++;
+            }
+            else if(s.charAt(i) == ')') {
+                count --;
+            }
+            if(count < 0) return 0;
+        }
+        if(count == 0) return 1;
+        else return 0;
+    }
+
+
+    /*
+    * Read from Left to Right
+    * As you see an opening brace, add to Stack
+    * As you find closing brace, check the top of the stack
+    * If the top of the stack has a corresponding opening brace, pop from the stack
+    * Keep going until you reach the end.
+    * If the Stack is not empty by the end of the traversal, you return 0
+    * Otherwise, return 1
+    */
+    private static int Brackets(String s) {
+        if(s.length() == 0) return 1;
+        Stack<Character> stack = new Stack();
+        for(int i = 0; i < s.length(); i++) {
+            if((s.charAt(i) == ')' && stack.empty())  ||
+                    (s.charAt(i) == ']' && stack.empty()) ||
+                    (s.charAt(i) == '}' && stack.empty())) {
+                return 0;
+            }
+            if(s.charAt(i) == '(' || s.charAt(i) == '[' || s.charAt(i) == '{')
+                stack.push(s.charAt(i));
+            else if(s.charAt(i) == ')' && stack.peek() ==  '(') {
+                stack.pop();
+            } else if(s.charAt(i) == ']' && stack.peek() == '[') {
+                stack.pop();
+            } else if(s.charAt(i) == '}' && stack.peek() == '{') {
+                stack.pop();
+            }
+        }
+        if(stack.size() == 0) return 1;
+        else return 0;
+    }
+
+    /*private static int Nesting(String s) {
+        int count = 0;
+
+        for(int i = 0; i < s.length(); i++) {
+            if(s.charAt(i) == '(')
+                count++;
+            else if(s.charAt(i) == ')')
+                count--;
+            else {
+                System.out.println("String s contains characters other than ( or )");
+                return -1;
+            }
+        }
+        if(count == rightParenCount) return 1;
+        else return 0;
+    }*/
 
     private static void LogisticsProblem() {
         try {
@@ -652,8 +737,6 @@ public class Main {
 
 
     private static int MaxProductOfThree(int[] A, int N) throws Exception {
-        //if(N < 3)
-        //    return 0;
         Arrays.sort(A);
 
         if (A[0] * A[1] < 0)
@@ -819,9 +902,8 @@ public class Main {
         long N = A.length + 1;
         long total = N * (N + 1) / 2;
 
-        for (int i : A) {
-
-            total -= i;
+        for (int i = 0; i < A.length; i++) {
+            total -= A[i];
         }
         return (int) total;
     }
